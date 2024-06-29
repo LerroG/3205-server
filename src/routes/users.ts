@@ -1,9 +1,19 @@
 import { Router } from 'express'
-import { getData } from '../controllers/products'
+import { query } from 'express-validator'
+import { getData } from '../controllers/users'
 
 const router = Router()
 
 // /api/products
-router.get('/', getData)
+router.get(
+	'/',
+	query('email')
+		.notEmpty()
+		.withMessage('The field must not be empty')
+		.isEmail()
+		.withMessage('This is not an email'),
+	query('number').optional().isNumeric().withMessage('This is not an number'),
+	getData
+)
 
 export default router

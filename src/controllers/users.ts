@@ -1,19 +1,30 @@
-import { Request, Response } from 'express-serve-static-core'
+import { Request, Response, NextFunction } from 'express-serve-static-core'
+import { validationResult } from 'express-validator'
 import { data } from '../data'
 import type { ISearchDto } from '../dtos/search.dto'
 
 // Get all products
 export const getData = async (
 	req: Request<{}, {}, {}, ISearchDto>,
-	res: Response
+	res: Response,
+	next: NextFunction
 ) => {
 	try {
-		const {email, number} = req.query
-		
+		const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+				return next(
+					res.send({ errors: errors.array() })
+				);
+			}
+			
+		const { email, number } = req.query
+
 		const searhByEmail = data.filter(item => item.email === email)
 
 		if (number) {
-			const searchByNumber = searhByEmail.filter(item => item.number === +number)
+			const searchByNumber = searhByEmail.filter(
+				item => item.number === +number
+			)
 
 			return res.status(200).send(searchByNumber)
 		}
