@@ -4,7 +4,7 @@ import { getData } from '../controllers/users'
 
 const router = Router()
 
-// /api/products
+// /api/users
 router.get(
 	'/',
 	query('email')
